@@ -1,7 +1,19 @@
+import { application } from 'express';
+import multer from 'multer';
+
+const upload = multer({dest : '../public/uploads'})
+
 // const nodemailer = require('nodemailer');
 const nodemailer = require('nodemailer')
 
-async function sendEmail(req, res) {
+
+async function sendEmail (req, res) {
+
+    
+    
+    // console.log(req.files.file);
+    // console.log(file);
+    // console.log(Object.fromEntries(file));
 
     const transporter = await nodemailer.createTransport({
         service: "gmail",
@@ -15,6 +27,16 @@ async function sendEmail(req, res) {
     })
     console.log('req', req.body);
     const passData = req.body
+    if(req.files) {
+        var file_name = req.files.file.name
+        var file_buffer = req.files.file.buffer
+    }
+    else {
+        var file_name = ""
+        var file_buffer = ""
+    }
+
+    
 
     let info = await transporter.sendMail({
         from: '"Mobedo Email" <mobedowebsite@gmail.com>',
@@ -48,7 +70,14 @@ async function sendEmail(req, res) {
                 </div>
             </div>
     
-        </div>`
+        </div>`,
+        attachments: [
+            {
+                filename: file_name,
+                // path: req.body.file_path,   
+                content: file_buffer
+            }
+        ]
     }, (err) => {
         if(err) {
             res.json({status: false, 
@@ -60,10 +89,11 @@ async function sendEmail(req, res) {
                 message: "Message sent successfully!"})
             console.log("message sent successfully.",);
         }
-    })
+    }
+    )
 
     
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
 
 // main()
