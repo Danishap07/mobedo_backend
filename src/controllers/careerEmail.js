@@ -1,49 +1,46 @@
-import { application } from 'express';
-import multer from 'multer';
+// import { application } from 'express';
+// import fileupload from 'express-fileupload';
 
-const upload = multer({dest : '../public/uploads'})
+
+// const upload = multer({dest : '../public/uploads'})
 
 // const nodemailer = require('nodemailer');
 const nodemailer = require('nodemailer')
 
 
-async function sendEmail (req, res) {
+async function sendEmail(req, res) {
 
-    
-    
-    // console.log(req.files.file);
-    // console.log(file);
-    // console.log(Object.fromEntries(file));
 
-    const transporter = await nodemailer.createTransport({
-        service: "gmail",
-        host: "smtp.gmail.com",
-        port: 465,
-        // secure: true,
-        auth: {
-            user: "mobedowebsite@gmail.com",
-            pass: "nedmwcxynmxtrhji"
-        }
-    })
-    console.log('req', req.body);
+
+    const newpath = __dirname + "/files/";
+    const files = req.files;
+    const attchmt = req.files.file;
+    // console.log("first", req.files)
+    const filename = files.file.name;
     const passData = req.body
-    if(req.files) {
-        var file_name = req.files.file.name
-        var file_buffer = req.files.file.buffer
-    }
-    else {
-        var file_name = ""
-        var file_buffer = ""
-    }
 
     
 
-    let info = await transporter.sendMail({
-        from: '"Mobedo Email" <mobedowebsite@gmail.com>',
-        to: "danishpatel915@gmail.com, manikantapujar@gmail.com",
-        subject: "Mobedo User Details",
-        // text: "hello this is my first email from node.js.",
-        html: `<div style="background:#ecf2fb">
+    const email = async () => {
+        // if(passData) {
+            // console.log("resod")
+            const transporter = await nodemailer.createTransport({
+                service: 'gmail',
+                port: 8000,
+                secure: false,
+                // secure: true,
+                auth: {
+                    user: "mobedowebsite@gmail.com",
+                    pass: "qewggmatwmonppyq"
+                }
+            })
+
+            let info = await transporter.sendMail({
+                from: '"Mobedo Email" <mobedowebsite@gmail.com>',
+                to: "danishpatel915@gmail.com, manikantapujar@gmail.com",
+                subject: "Mobedo User Details",
+                // text: "hello this is my first email from node.js.",
+                html: `<div style="background:#ecf2fb">
         <div style="background:#ecf2fb;padding:30px 5px">
             <div style="max-width:600px;min-width:295px;margin:0 auto">
                 <div
@@ -71,31 +68,50 @@ async function sendEmail (req, res) {
             </div>
     
         </div>`,
-        attachments: [
-            {
-                filename: file_name,
-                // path: req.body.file_path,   
-                content: file_buffer
+                attachments: [
+                    {
+                        filename: filename,
+                        path: `${newpath}${filename}`
+                    }
+                ]
+            }, (err, info) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        message: 'Email sending failed!'
+                    })
+                    console.log("Email sending failed", err);
+                }
+                else {
+                    res.json({
+                        status: true,
+                        message: "Message sent successfully!"
+                    })
+                    console.log("message sent successfully.");
+                }
             }
-        ]
-    }, (err) => {
-        if(err) {
-            res.json({status: false, 
-                message: 'Email sending failed!'})
-            console.log("Email sending failed", err);
-        }
-        else {
-            res.json({status: true,
-                message: "Message sent successfully!"})
-            console.log("message sent successfully.",);
-        }
-    }
-    )
-
+            )
+        // }
     
+
     // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    }
+            // console.log(req.files.file);
+            // console.log(file);
+            // console.log(Object.fromEntries(file));
+            attchmt.mv(`${newpath}${filename}`, async (err, res) => {
+                if (err) {
+                    console.log(err)
+                    res.status(500).json({ message: "File upload failed", response: err });
+                }
+                else {
+                    email()
+                    // res.json({ status:200, message: "File Uploaded", response: res, cb:email() });
+                }
+            });
+        
 }
 
 // main()
 
-export default sendEmail;
+export default sendEmail
