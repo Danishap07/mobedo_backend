@@ -21,6 +21,6 @@ router.route('/').get((req, res) => {
     });
 })
   
-  router.route('/send_email').post(upload.single('file'), sendEmail);
+  router.route('/send_email').post( sendEmail);
 
 export default router;

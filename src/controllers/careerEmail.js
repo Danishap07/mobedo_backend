@@ -15,9 +15,10 @@ async function sendEmail(req, res) {
     const newpath = __dirname + "/files/";
     const files = req.files;
     const attchmt = req.files.file;
-    // console.log("first", req.files)
+    console.log("first", req.body);
     const filename = files.file.name;
     const passData = req.body
+    // console.log("1", req)
 
     
 
@@ -37,7 +38,7 @@ async function sendEmail(req, res) {
 
             let info = await transporter.sendMail({
                 from: '"Mobedo Email" <mobedowebsite@gmail.com>',
-                to: "danishpatel915@gmail.com, manikantapujar@gmail.com",
+                to: "careers@mobedoconsulting.com, info@mobedoconsulting.com",
                 subject: "Mobedo User Details",
                 // text: "hello this is my first email from node.js.",
                 html: `<div style="background:#ecf2fb">
