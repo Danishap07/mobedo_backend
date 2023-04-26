@@ -1,8 +1,9 @@
 import { Router } from 'express';
 const router = Router();
-import sendEmail from '../controllers/careerEmail'
 import multer from 'multer';
 import upload from '../helpers/filehelpers';
+import sendEmail from '../controllers/careerEmail'
+import multer from 'multer';
 
 // const storage = multer.diskStorage({
 //   destination: (req, res, cb) => {
@@ -20,7 +21,8 @@ router.route('/').get((req, res) => {
         message:"hello From your new API!"
     });
 })
+
   
-  router.route('/send_email').post( sendEmail);
+  router.route('/send_email').post(upload.single('myfile'),sendEmail);
 
 export default router;
