@@ -1,9 +1,10 @@
 import { Router } from 'express';
 const router = Router();
-import multer from 'multer';
+// import multer from 'multer';
 import upload from '../helpers/filehelpers';
 import sendEmail from '../controllers/careerEmail'
-import multer from 'multer';
+// import multer from 'multer';
+import contactMail from '../controllers/contact';
 
 // const storage = multer.diskStorage({
 //   destination: (req, res, cb) => {
@@ -23,6 +24,7 @@ router.route('/').get((req, res) => {
 })
 
   
-  router.route('/send_email').post(upload.single('myfile'),sendEmail);
+  router.route('/send_email').post(sendEmail);
+  router.route('/contact_mail').post(contactMail)
 
 export default router;
